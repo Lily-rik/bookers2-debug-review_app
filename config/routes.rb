@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   root 'homes#top'
   get 'home/about' => 'homes#about'
 
+
   resources :users,only: [:show, :index, :edit, :update] do
     resource :relationships,only: [:create, :destroy]
     get :follows, on: :member
@@ -16,4 +17,8 @@ Rails.application.routes.draw do
     resource :favorites,only: [:create, :destroy]
     resource :book_comments,only: [:create, :destroy]
   end
+
+  get 'search' => 'searches#search'
+
+
 end
