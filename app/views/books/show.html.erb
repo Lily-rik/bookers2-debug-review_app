@@ -21,43 +21,26 @@
           </td>
           <td><%= link_to @book.title, book_path(@book) %></td>
           <td><%= @book.body %></td>
-          <% if @book.favorited_by?(current_user) %>
-            <td>
-              <%= link_to book_favorites_path(@book), method: :delete do %>
-                <i class="fas fa-heart text-danger"></i><span class="text-danger"><%= @book.favorites.count %></span>
-              <% end %>
-            </td>
-          <% else %>
-            <td>
-              <%= link_to book_favorites_path(@book), method: :post do %>
-                <i class="far fa-heart"></i><%= @book.favorites.count %>
-              <% end %>
-            </td>
-          <% end %>
-          <td>コメント数：<%= @book.book_comments.count %></td>
+
+        <td id="favorited_buttons_<%= @book.id %>">
+          <%= render 'favorites/favorite', book: @book %>
+        </td>
+
+          <td id="comment_count">
+            コメント数：<%= @book.book_comments.count %>
+          </td>
           <% if @user == current_user %>
             <td><%= link_to 'Edit', edit_book_path(@book), class: "btn btn-sm btn-success edit_book_#{@book.id}" %></td>
             <td><%= link_to 'Destroy', book_path(@book), method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger destroy_book_#{@book.id}"%></td>
           <% end %>
         </tr>
       </table>
-      <div class="comments">
-        <% @book.book_comments.each do |book_comment| %>
-          <p>
-            <%= attachment_image_tag(book_comment.user, :profile_image, :fill, 50, 50, fallback: "no_image.jpg") %>
-            <%= book_comment.comment %>
-            <% if book_comment.user == current_user %>
-              <td><%= link_to 'Destroy', book_book_comments_path(@book), method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger destroy_book_#{@book.id}"%></td>
-            <% end %>
-          </p>
-          <%= link_to book_comment.user.name, user_path(@user) %>
-        <% end %>
+
+      <div class="comments" id="book_comments_<%= @book.id %>">
+        <%= render 'book_comments/book_comment', book: @book %>
       </div>
-      <div class="new-comment">
-        <%= form_with(model:[@book, @book_comment], local: true) do |f| %>
-          <%=f.text_area :comment, class: "form-control" %>
-          <%=f.submit '送信' %>
-        <% end %>
+      <div id="new_comment">
+        <%= render 'book_comments/form', {book: @book, book_comment: @book_comment} %>
       </div>
     </div>
   </div>
